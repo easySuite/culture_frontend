@@ -2,5 +2,14 @@
 
 /**
  * @file
- * Culture frontend functionality.
+ * Code for the Culture frontend feature.
  */
+
+include_once 'culture_frontend.features.inc';
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function culture_frontend_ctools_plugin_directory($module, $plugin) {
+  return 'plugins/' . $plugin;
+}
