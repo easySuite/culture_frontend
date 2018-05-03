@@ -13,3 +13,53 @@ include_once 'culture_frontend.features.inc';
 function culture_frontend_ctools_plugin_directory($module, $plugin) {
   return 'plugins/' . $plugin;
 }
+
+/**
+ * Implements hook_menu().
+ */
+function culture_frontend_menu() {
+  $item = array();
+
+  $item['culture_events/autocomplete'] = array(
+    'title' => 'Event nodes autocomplete',
+    'page callback' => 'culture_frontend_events_autocomplete',
+    'access callback' => 'user_access',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $item;
+}
+
+/**
+ * Autocomplete callback.
+ *
+ * @param string $string
+ *   String to be searched in events.
+ */
+function culture_frontend_events_autocomplete($string = '') {
+  $matches = array();
+  if ($string) {
+    $result = db_select('node')
+      ->fields('node', array('title'))
+      ->condition('type', 'ding_event')
+      ->condition('title', '%' . db_like($string) . '%', 'LIKE')
+      ->condition('status', '1')
+      ->range(0, 10)
+      ->execute();
+    foreach ($result as $node) {
+      $matches[$node->title] = check_plain($node->title);
+    }
+  }
+
+  drupal_json_output($matches);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'views_exposed_form' && $form_state['display']->id == 'ding_event_list') {
+    $form['title']['#autocomplete_path'] = 'culture_events/autocomplete';
+  }
+}
