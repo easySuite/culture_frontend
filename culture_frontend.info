@@ -12,5 +12,7 @@ features[ctools][] = page_manager:pages_default:1
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:2
 features[page_manager_pages][] = culture_frontpage
+features[variable][] = search_active_modules
+features[variable][] = search_default_module
 features[variable][] = site_frontpage
 features[variable][] = theme_default

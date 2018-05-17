@@ -148,6 +148,35 @@ function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
         ),
       ),
     );
+
+    // Alter node search exposed form.
+    // Populate exposed search textfield.
+    $args = arg();
+    if ($args[0] == 'search') {
+      if (!empty($args[2])) {
+        $form['title']['#default_value'] = check_plain($args[2]);
+        $form_state['input']['title'] = check_plain($args[2]);
+      }
+
+      $form['#submit'][] = '_culture_frontend_exposed_form_submit';
+    }
+  }
+}
+
+/**
+ * Redirect on search exposed form submit.
+ */
+function _culture_frontend_exposed_form_submit(&$form, &$form_state) {
+  $args = arg();
+  if (!empty($_GET['title'])) {
+    $args[2] = $_GET['title'];
+    $_GET['q'] = implode('/', $args);
+
+    $query = $_GET;
+    unset($query['q']);
+    unset($query['title']);
+
+    drupal_goto($_GET['q'], array('query' => $query));
   }
 }
 
@@ -183,4 +212,97 @@ function culture_frontend_events_autocomplete($string = '') {
   }
 
   drupal_json_output($matches);
+}
+
+/**
+ * Implements hook_views_post_render().
+ */
+function culture_frontend_views_post_render(&$view, &$output, &$cache) {
+  if ($view->base_table == 'search_api_index_default_multiple_index') {
+
+    // Filter events based on the exposed values.
+    $result = $view->result;
+    foreach ($result as $rid => $item) {
+      $item_bundle = $item->_entity_properties['item_bundle'];
+      $bundle = explode(':', $item_bundle)[1];
+      if ($bundle == 'ding_event') {
+        $node = node_load($item->_entity_properties['node']);
+        if (!_culture_frontend_search_filter_events($node)) {
+          unset($view->result[$rid]);
+        }
+      }
+    }
+
+    // Re-render output after results is altered. In order to escape post render
+    // recursion call static function.
+    $rendered = &drupal_static(__FUNCTION__);
+    if (empty($rendered)) {
+      $rendered = TRUE;
+      $view->name = 'ding_multiple_search';
+      $output = $view->preview();
+    }
+  }
+}
+
+/**
+ * Filter events based on the exposed values.
+ *
+ * @param stdClass $node
+ *   Node event object.
+ *
+ * @return bool
+ *  If node passed all the checks then it can be displayed.
+ */
+function _culture_frontend_search_filter_events($node) {
+  // Compare start dates.
+  if (!empty($_GET['date']['value']['date'])) {
+    $input_date = new DateTime($_GET['date']['value']['date']);
+    $node_date = new DateTime($node->field_ding_event_date[LANGUAGE_NONE][0]['value']);
+    $node_date->setTime(0, 0);
+
+    if ($input_date > $node_date) {
+      return FALSE;
+    }
+  }
+
+  // Compare end dates.
+  if (!empty($_GET['field_ding_event_date_value_1']['value']['date'])) {
+    $input_date = new DateTime($_GET['field_ding_event_date_value_1']['value']['date']);
+    $node_date = new DateTime($node->field_ding_event_date[LANGUAGE_NONE][0]['value']);
+    $node_date->setTime(0, 0);
+
+    if ($input_date < $node_date) {
+      return FALSE;
+    }
+  }
+
+  // Compare event categories.
+  if (!empty($_GET['field_ding_event_category_tid'])) {
+    if (!in_array($node->field_ding_event_category[LANGUAGE_NONE][0]['tid'], $_GET['field_ding_event_category_tid'])) {
+      return FALSE;
+    }
+  }
+
+  // Compare libraries.
+  if (!empty($_GET['og_group_ref_target_id_entityreference_filter'])) {
+    if (!in_array($node->og_group_ref[LANGUAGE_NONE][0]['target_id'], $_GET['og_group_ref_target_id_entityreference_filter'])) {
+      return FALSE;
+    }
+  }
+
+  // Compare event targets.
+  if (!empty($_GET['field_ding_event_target_tid'])) {
+    if (!in_array($node->field_ding_event_target[LANGUAGE_NONE][0]['tid'], $_GET['field_ding_event_target_tid'])) {
+      return FALSE;
+    }
+  }
+
+  // Filter sticky events.
+  if (isset($_GET['sticky'])) {
+    if ($_GET['sticky'] != $node->sticky && $_GET['sticky'] != 'All') {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
 }
