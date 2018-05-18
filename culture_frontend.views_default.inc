@@ -22,6 +22,7 @@ function culture_frontend_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['title'] = 'Editor\'s choice';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -88,8 +89,6 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['validate']['fail'] = 'access denied';
   $handler->display->display_options['arguments']['nid']['title_relevance'] = '0.8';
   $handler->display->display_options['arguments']['nid']['body_relevance'] = '1.4';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_lead'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:og_membership_request'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_alt_text'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_title_text'] = '0';
@@ -112,6 +111,8 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['included_fields:field_ting_object'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_value'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:comment_body'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_lead'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_body'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_fax_number'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_lead'] = '0';
@@ -242,6 +243,7 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['gid']['summary_options']['items_per_page'] = '25';
   $translatables['culture_events'] = array(
     t('Master'),
+    t('Editor\'s choice'),
     t('more'),
     t('Apply'),
     t('Reset'),

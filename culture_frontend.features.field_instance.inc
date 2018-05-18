@@ -23,7 +23,7 @@ function culture_frontend_field_default_field_instances() {
         'weight' => 0,
       ),
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'culture_frontend',
         'settings' => array(),
         'type' => 'culture_frontend_control_formatter_default',
