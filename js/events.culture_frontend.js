@@ -22,7 +22,7 @@
         e.preventDefault();
         start_date_form.val(start_date_value);
         end_date_form.val(end_date_value);
-        form.find('.ctools-auto-submit-click').click()
+        form.find('.ctools-auto-submit-click').click();
       });
 
       next_weekend.click(function (e) {

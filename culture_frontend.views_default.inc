@@ -88,6 +88,8 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['validate']['fail'] = 'access denied';
   $handler->display->display_options['arguments']['nid']['title_relevance'] = '0.8';
   $handler->display->display_options['arguments']['nid']['body_relevance'] = '1.4';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_lead'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:og_membership_request'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_alt_text'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_title_text'] = '0';
@@ -110,9 +112,6 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['included_fields:field_ting_object'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_value'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:comment_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_lead'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_price'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_body'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_fax_number'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_lead'] = '0';
@@ -178,15 +177,41 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Other events the same day';
   $handler->display->display_options['defaults']['arguments'] = FALSE;
-  /* Contextual filter: Date: Date (node) */
-  $handler->display->display_options['arguments']['date_argument']['id'] = 'date_argument';
-  $handler->display->display_options['arguments']['date_argument']['table'] = 'node';
-  $handler->display->display_options['arguments']['date_argument']['field'] = 'date_argument';
-  $handler->display->display_options['arguments']['date_argument']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['date_argument']['default_argument_type'] = 'node';
-  $handler->display->display_options['arguments']['date_argument']['granularity'] = 'day';
-  $handler->display->display_options['arguments']['date_argument']['use_fromto'] = 'no';
-  $handler->display->display_options['arguments']['date_argument']['date_fields'] = array(
+  /* Contextual filter: Content id: Filter the node it self out */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['ui_name'] = 'Content id: Filter the node it self out';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['nid']['not'] = TRUE;
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'ding_event' => 'ding_event',
+  );
+  /* Filter criterion: Date: Date (node) */
+  $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['table'] = 'node';
+  $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['operator'] = '>=';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = 'now';
+  $handler->display->display_options['filters']['date_filter']['year_range'] = '-1:+1';
+  $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
     'field_data_field_ding_event_date.field_ding_event_date_value' => 'field_data_field_ding_event_date.field_ding_event_date_value',
   );
 

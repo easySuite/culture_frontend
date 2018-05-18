@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Culture distribution implementation to present a Panels layout.
@@ -10,7 +11,7 @@
  */
 ?>
 
-<div <?php if (!empty($css_id)) { print ' id="$css_id"';} ?> class="container">
+<div <?php if (!empty($css_id)) {print ' id="$css_id"';} ?> class="container">
   <div class="row">
     <?php if ($content['s1_r_01_100']): ?>
       <div class="col col-md-12"><?php print $content['s1_r_01_100']; ?></div>
