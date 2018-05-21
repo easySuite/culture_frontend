@@ -218,7 +218,7 @@ function culture_frontend_field_widget_form(&$form, &$form_state, $field, $insta
             '#type' => 'textfield',
             '#title' => t('Node title'),
             '#default_value' => !empty($item['nids']) ? $item['nids'] : '',
-            '#autocomplete_path' => 'culture_events/autocomplete',
+            '#autocomplete_path' => 'culture_events/lists_options/autocomplete',
             '#number' => !empty($item['nids']['fieldset_multifield_nids']['multifield_nids']) ? count($item['nids']['fieldset_multifield_nids']['multifield_nids']) : '1',
             '#add_more' => TRUE,
             '#collapsible' => TRUE,

@@ -21,9 +21,10 @@ function culture_frontend_ctools_plugin_directory($module, $plugin) {
 function culture_frontend_menu() {
   $item = array();
 
-  $item['culture_events/autocomplete'] = array(
+  $item['culture_events/%/autocomplete'] = array(
     'title' => 'Event nodes autocomplete',
     'page callback' => 'culture_frontend_events_autocomplete',
+    'page arguments' => array(1),
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -37,9 +38,12 @@ function culture_frontend_menu() {
  */
 function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form_state['display']->id == 'ding_event_list') {
+    $args = arg();
 
     // Process autocomplete for text field.
-    $form['title']['#autocomplete_path'] = 'culture_events/autocomplete';
+    if (!in_array('search', $args)) {
+      $form['title']['#autocomplete_path'] = 'culture_events/list/autocomplete';
+    }
 
     // Process "tommorow".
     $tomorrow = new DateTime('tomorrow');
@@ -196,7 +200,7 @@ function culture_frontend_page_alter(&$page) {
  * @param string $string
  *   String to be searched in events.
  */
-function culture_frontend_events_autocomplete($string = '') {
+function culture_frontend_events_autocomplete($type, $string = '') {
   $matches = array();
   if ($string) {
     $result = db_select('node')
@@ -207,7 +211,12 @@ function culture_frontend_events_autocomplete($string = '') {
       ->range(0, 10)
       ->execute();
     foreach ($result as $node) {
-      $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');
+      if ($type == 'list') {
+        $matches[$node->title] = check_plain($node->title);
+      }
+      else {
+        $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');
+      }
     }
   }
 
