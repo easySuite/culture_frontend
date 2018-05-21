@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Culture frontend installation and uninstallation functionality.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function culture_frontend_field_schema() {
+  $columns = array(
+    'lists_options' => array(
+      'type' => 'blob',
+      'not null' => FALSE,
+      'serialize' => TRUE,
+      'size' => 'big',
+    ),
+  );
+
+  return array(
+    'columns' => $columns,
+  );
+}

@@ -6,6 +6,7 @@
  */
 
 include_once 'culture_frontend.features.inc';
+include_once 'culture_frontend.fields.inc';
 
 /**
  * Implements hook_ctools_plugin_directory().
@@ -30,7 +31,6 @@ function culture_frontend_menu() {
 
   return $item;
 }
-
 
 /**
  * Implements hook_form_alter().
@@ -200,14 +200,14 @@ function culture_frontend_events_autocomplete($string = '') {
   $matches = array();
   if ($string) {
     $result = db_select('node')
-      ->fields('node', array('title'))
+      ->fields('node', array('nid', 'title'))
       ->condition('type', 'ding_event')
       ->condition('title', '%' . db_like($string) . '%', 'LIKE')
       ->condition('status', '1')
       ->range(0, 10)
       ->execute();
     foreach ($result as $node) {
-      $matches[$node->title] = check_plain($node->title);
+      $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');
     }
   }
 
@@ -305,4 +305,239 @@ function _culture_frontend_search_filter_events($node) {
   }
 
   return TRUE;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function culture_frontend_theme($existing, $type, $theme, $path) {
+  return array(
+    'manually_multifield_dragandrop' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+/**
+ * Transform passed field into multifield widget.
+ *
+ * @param array $parents
+ *   Array with preocessed field path.
+ * @param array $form
+ *   Form structure.
+ * @param array $form_state
+ *   Form state values.
+ */
+function culture_frontend_multifield($parents, &$form, &$form_state) {
+  $field = drupal_array_get_nested_value($form, $parents);
+
+  $element_name = end($parents);
+
+  $fieldset_id = "fieldset_multifield_$element_name";
+
+  $form_state['culture_frontend_multifield'][$element_name]['parents'] = $parents;
+
+  $form_chunk[$fieldset_id] = array(
+    '#type'   => 'fieldset',
+    '#prefix' => '<div id="' . $fieldset_id . '">',
+    '#suffix' => '</div>',
+    '#states' => array(
+      "visible" => array(
+        ":input[name='field_culture_lists_control[und][0][wrapper][lists_options][manually][check]']" => array("checked" => TRUE),
+      ),
+    ),
+  );
+
+  $additional_properties = array(
+    '#title' => '',
+    '#description' => '',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  foreach ($additional_properties as $property => $default_value) {
+    if (isset($field[$property])) {
+      $form_chunk[$fieldset_id][$property] = $field[$property];
+      unset($field[$property]);
+    }
+    else {
+      $form_chunk[$fieldset_id][$property] = $default_value;
+    }
+  }
+
+  if (empty($form_state['culture_frontend_multifield'][$element_name]['fields_number'])) {
+    $fields_number = count($field['#default_values']) > $field['#number'] ? count($field['#default_values']) : $field['#number'];
+    $form_state['culture_frontend_multifield'][$element_name]['fields_number'] = $fields_number;
+  }
+
+  $field_name = "multifield_$element_name";
+  for ($i = 0; $i < $form_state['culture_frontend_multifield'][$element_name]['fields_number']; $i++) {
+    $form_chunk[$fieldset_id][$field_name][$i]['value'] = $field;
+    $form_chunk[$fieldset_id][$field_name][$i]['value']['#default_value'] = isset($field['#default_values'][$i]) ? $field['#default_values'][$i] : '';
+    $form_chunk[$fieldset_id][$field_name][$i]['weight'] = array(
+      '#type'          => 'weight',
+      '#title'         => t('Weight'),
+      '#default_value' => $i,
+      '#title-display' => 'invisible',
+      '#attributes' => array('class' => array('culture-frontend-multifield-item-weight')),
+    );
+  }
+  $form_chunk[$fieldset_id][$field_name]['#tree'] = TRUE;
+  $form_chunk[$fieldset_id][$field_name]['#theme'] = 'manually_multifield_dragandrop';
+  if ($field['#add_more']) {
+    $form_chunk[$fieldset_id]["culture_frontend_multifield_add_more"] = array(
+      '#element_name' => $element_name,
+      '#type' => 'submit',
+      '#value' => t('Add one more'),
+      '#name' => "culture_frontend_multifield_add_more_$element_name",
+      '#submit' => array("culture_frontend_multifield_submit_add_more"),
+      '#limit_validation_errors' => array(array($fieldset_id, $element_name)),
+      '#ajax' => array(
+        'callback' => 'culture_frontend_multifield_ajax',
+        'wrapper' => $fieldset_id,
+      ),
+    );
+
+    if ($form_state['culture_frontend_multifield'][$element_name]['fields_number'] > 1) {
+      $form_chunk[$fieldset_id]["culture_frontend_multifield_remove_one"] = array(
+        '#element_name' => $element_name,
+        '#type' => 'submit',
+        '#value' => t('Remove one'),
+        '#name' => "culture_frontend_multifield_remove_one_$element_name",
+        '#submit' => array('culture_frontend_multifield_submit_remove_one'),
+        '#limit_validation_errors' => array(array($fieldset_id, $element_name)),
+        '#ajax' => array(
+          'callback' => 'culture_frontend_multifield_ajax',
+          'wrapper' => $fieldset_id,
+        ),
+      );
+    }
+  }
+
+  drupal_array_set_nested_value($form, $parents, $form_chunk);
+}
+
+/**
+ * Submit handler for the "add-one-more" button.
+ *
+ * Increments the max counter and causes a rebuild.
+ */
+function culture_frontend_multifield_submit_add_more($form, &$form_state) {
+  $element_name = $form_state['triggering_element']['#element_name'];
+  $form_state['culture_frontend_multifield'][$element_name]['fields_number']++;
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Submit handler for the "remove one" button.
+ *
+ * Decrements the max counter and causes a form rebuild.
+ */
+function culture_frontend_multifield_submit_remove_one($form, &$form_state) {
+  $element_name = $form_state['triggering_element']['#element_name'];
+  if ($form_state['culture_frontend_multifield'][$element_name]['fields_number']) {
+    $form_state['culture_frontend_multifield'][$element_name]['fields_number']--;
+  }
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Callback for both ajax-enabled buttons.
+ *
+ * Return portion of the form to rebuild, with added or removed fields.
+ */
+function culture_frontend_multifield_ajax($form, $form_state) {
+  $element_name = $form_state['triggering_element']['#element_name'];
+  $parents = $form_state['culture_frontend_multifield'][$element_name]['parents'];
+  $output = drupal_array_get_nested_value($form, $parents);
+  return $output;
+}
+
+/**
+ * Theme for make our multifield draggable.
+ *
+ * @throws \Exception
+ */
+function theme_manually_multifield_dragandrop($variables) {
+  $element = $variables['element'];
+  $output = '';
+  $rows = array();
+
+  foreach (element_children($element) as $id) {
+    $rows[$id]['data'][] = drupal_render($element[$id]['value']);
+    $rows[$id]['data'][] = drupal_render($element[$id]['weight']);
+    $rows[$id]['class'][] = 'draggable';
+  }
+
+  $header = array(t('title'), t('Weight'));
+  $table_id = 'culture-frontend-table_' . $element['#id'];
+
+  $output .= theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array('id' => $table_id),
+  ));
+
+  $output .= drupal_render_children($element);
+
+  drupal_add_tabledrag($table_id, 'order', 'sibling', 'culture-frontend-multifield-item-weight');
+
+  return $output;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function culture_frontend_form_ding_event_node_form_alter(&$form, &$form_state, $form_id) {
+  culture_frontend_multifield(array(
+    'field_culture_lists_control',
+    'und',
+    '0',
+    'wrapper',
+    'lists_options',
+    'manually',
+    'nids',
+  ), $form, $form_state);
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function culture_frontend_views_query_alter(&$view, &$query) {
+  if ($view->name == 'culture_events' && $view->current_display == 'culture_events_day') {
+    $nid = arg(1);
+    if (is_int($nid)) {
+      $node = node_load($nid);
+
+      $current_node_date_value = $node->field_ding_event_date['und'][0]['value'];
+      $date_object = DateTime::createFromFormat('Y-m-d H:i:s', $current_node_date_value);
+      $current_node_date = $date_object->format('Y-m-d');
+
+      if ($current_node_date >= date('Y-m-d')) {
+        $queried_date = $current_node_date;
+      }
+      else {
+        $queried_date = date('Y-m-d');
+      }
+
+      $date_condition = array(
+        'field' => "DATE_FORMAT(ADDTIME(field_data_field_ding_event_date.field_ding_event_date_value, SEC_TO_TIME(7200)), '%Y-%m-%d') <= :node_between_date_filter AND DATE_FORMAT(ADDTIME(field_data_field_ding_event_date.field_ding_event_date_value2, SEC_TO_TIME(7200)), '%Y-%m-%d') >= :node_between_date_filter",
+        'value' => array(
+          ':node_between_date_filter' => $queried_date,
+        ),
+        'operator' => 'formula',
+      );
+
+      // Condition for fetching events with same date as parent node.
+      $query->where[1]['conditions'][] = $date_condition;
+    }
+  }
+}
+
+/**
+ * Implements hook_node_view_alter().
+ */
+function culture_frontend_node_view_alter(&$build) {
+  if ($build['#view_mode'] == 'teaser') {
+    $build['#node']->content = array();
+  }
 }

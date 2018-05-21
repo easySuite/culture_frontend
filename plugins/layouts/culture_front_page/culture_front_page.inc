@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Defining custom Culture layout.
+ */
+
 $plugin['culture_front_page'] = array(
   'title' => t('easyOPAC Culture default layout'),
   'category'  => 'Culture',
