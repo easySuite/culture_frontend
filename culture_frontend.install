@@ -22,3 +22,18 @@ function culture_frontend_field_schema() {
     'columns' => $columns,
   );
 }
+
+/**
+ * Implements hook_install().
+ */
+function culture_frontend_install() {
+  // Make '/user/login' path to redirect to page instead of showing ding_popup.
+  variable_set('ding_user_show_login_page', 1);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function culture_frontend_uninstall() {
+  variable_del('ding_user_show_login_page');
+}
