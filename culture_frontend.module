@@ -210,7 +210,7 @@ function culture_frontend_events_autocomplete($type, $string = '') {
       ->condition('type', 'ding_event')
       ->condition('title', '%' . db_like($string) . '%', 'LIKE')
       ->condition('status', '1')
-      ->condition('date.field_ding_event_date_value', $today, '>')
+      ->condition('date.field_ding_event_date_value', $today, '>=')
       ->range(0, 10);
     $result = $query->execute();
     foreach ($result as $node) {
