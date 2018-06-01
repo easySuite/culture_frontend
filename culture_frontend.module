@@ -202,14 +202,17 @@ function culture_frontend_page_alter(&$page) {
  */
 function culture_frontend_events_autocomplete($type, $string = '') {
   $matches = array();
+  $today = date('Y-m-d H:i:s', time());
   if ($string) {
-    $result = db_select('node')
-      ->fields('node', array('nid', 'title'))
+    $query = db_select('node', 'n');
+    $query->join('field_data_field_ding_event_date', 'date', 'n.nid = date.entity_id');
+    $query->fields('n', array('nid', 'title'))
       ->condition('type', 'ding_event')
       ->condition('title', '%' . db_like($string) . '%', 'LIKE')
       ->condition('status', '1')
-      ->range(0, 10)
-      ->execute();
+      ->condition('date.field_ding_event_date_value', $today, '>=')
+      ->range(0, 10);
+    $result = $query->execute();
     foreach ($result as $node) {
       if ($type == 'list') {
         $matches[$node->title] = check_plain($node->title);
