@@ -546,6 +546,27 @@ function culture_frontend_views_query_alter(&$view, &$query) {
 }
 
 /**
+ * Implements hook_views_default_views_alter().
+ */
+function culture_frontend_views_default_views_alter(&$views) {
+  if (array_key_exists('ding_event', $views)) {
+    $display = $views['ding_event']->display['ding_event_list'];
+
+    $display->display_options['filters']['sticky']['id'] = 'sticky';
+    $display->display_options['filters']['sticky']['table'] = 'node';
+    $display->display_options['filters']['sticky']['field'] = 'sticky';
+    $display->display_options['filters']['sticky']['value'] = 'All';
+    $display->display_options['filters']['sticky']['exposed'] = TRUE;
+    $display->display_options['filters']['sticky']['expose']['operator_id'] = '';
+    $display->display_options['filters']['sticky']['expose']['label'] = 'Sticky';
+    $display->display_options['filters']['sticky']['expose']['operator'] = 'sticky_op';
+    $display->display_options['filters']['sticky']['expose']['identifier'] = 'sticky';
+
+    $views['ding_event']->display['ding_event_list'] = $display;
+  }
+}
+
+/**
  * Implements hook_node_view_alter().
  */
 function culture_frontend_node_view_alter(&$build) {
