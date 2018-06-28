@@ -38,13 +38,6 @@ function culture_frontend_menu() {
  */
 function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form_state['display']->id == 'ding_event_list') {
-    $args = arg();
-
-    // Process autocomplete for text field.
-    if (!in_array('search', $args)) {
-      $form['title']['#autocomplete_path'] = 'culture_events/list/autocomplete';
-    }
-
     // Process "tommorow".
     $tomorrow = new DateTime('tomorrow');
     $form['tomorrow'] = array(
