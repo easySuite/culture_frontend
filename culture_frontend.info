@@ -19,6 +19,7 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[field_base][] = field_culture_lists_control
 features[field_instance][] = node-ding_event-field_culture_lists_control
+features[page_manager_handlers][] = site_template__culture-site-template
 features[page_manager_pages][] = culture_frontpage
 features[variable][] = search_active_modules
 features[variable][] = search_default_module
