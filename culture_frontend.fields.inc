@@ -56,6 +56,7 @@ function culture_frontend_field_formatter_view($entity_type, $entity, $field, $i
     switch ($display['type']) {
       case 'culture_frontend_control_formatter_default':
         $options = $entity->field_culture_lists_control[LANGUAGE_NONE][0]['lists_options'];
+        drupal_add_js(drupal_get_path('module', 'culture_frontend') . '/js/event_node.culture_frontend.js', 'file');
 
         foreach ($options as $key => $option) {
           switch ($key) {
@@ -93,6 +94,10 @@ function culture_frontend_field_formatter_view($entity_type, $entity, $field, $i
 
             case 'manually':
               if ($option['check'] == 1) {
+                $headline = '';
+                if (!empty($options['manually']['nids']['fieldset_multifield_nids']['headline'])) {
+                  $headline = $options['manually']['nids']['fieldset_multifield_nids']['headline'];
+                }
                 $saved_values = $options['manually']['nids']['fieldset_multifield_nids']['multifield_nids'];
                 $nids = array();
                 foreach ($saved_values as $saved_value) {
@@ -100,7 +105,7 @@ function culture_frontend_field_formatter_view($entity_type, $entity, $field, $i
                   $nids[] = $matches[1];
                 }
                 $args = array((count($nids) > 1) ? implode('+', $nids) : array_shift($nids));
-                $output = _culture_frontend_views_result($key, $args, count($nids));
+                $output = _culture_frontend_views_result($key, $args, count($nids), $headline);
                 $element[0][] = $output;
               }
               break;
@@ -121,13 +126,18 @@ function culture_frontend_field_formatter_view($entity_type, $entity, $field, $i
  *   Views display arguments.
  * @param int $amount
  *   Amount of items to be shown.
+ * @param bool|string $headline
+ *   Adds headline to 'manually' list.
  *
  * @return array
  *   Renderable array.
  */
-function _culture_frontend_views_result($type, array $args, $amount) {
+function _culture_frontend_views_result($type, array $args, $amount, $headline = FALSE) {
   $view = views_get_view('culture_events');
   $view->set_display('culture_events_' . $type);
+  if (!empty($headline)) {
+    $view->display[$view->current_display]->handler->options["title"] = $headline;
+  }
   $view->set_arguments($args);
   $view->set_items_per_page($amount);
   $view->execute();
@@ -197,7 +207,7 @@ function culture_frontend_field_widget_form(&$form, &$form_state, $field, $insta
           $element['wrapper']['lists_options'][$key]['amount'] = array(
             '#type' => 'textfield',
             '#title' => t('Amount'),
-            '#default_value' => !empty($item['amount']) ? $item['amount'] : 0,
+            '#default_value' => !empty($item['amount']) ? $item['amount'] : 3,
             '#required' => TRUE,
             '#states' => array(
               "visible" => array(
