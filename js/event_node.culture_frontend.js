@@ -18,7 +18,9 @@
       };
 
       $.each(lists, function(index, list) {
-        $('.' + list + ' .view-content').slick(slick_options);
+        if ($('.' + list + ' .views-row').length > 3) {
+          $('.' + list + ' .view-content').slick(slick_options);
+        }
       });
     }
   }
