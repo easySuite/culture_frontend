@@ -231,6 +231,17 @@ function culture_frontend_multifield($parents, &$form, &$form_state) {
     ),
   );
 
+  $node = !empty($form_state['node']) ? $form_state['node'] : FALSE;
+  $headline_field = field_get_items('node', $node, 'field_culture_lists_control');
+  $headline = $headline_field[0]['lists_options']['manually']['nids']['fieldset_multifield_nids']['headline'];
+
+  $form_chunk[$fieldset_id]['headline'] = array(
+    '#type' => 'textfield',
+    '#title' => t('List headline'),
+    '#description' => t('Inserts text in top of manually formed list. If empty "Editor\'s choice" text will be shown by default.'),
+    '#default_value' => !empty($headline) ? $headline : '',
+  );
+
   $additional_properties = array(
     '#title' => '',
     '#description' => '',
