@@ -146,6 +146,24 @@ function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
       ),
     );
   }
+
+  if ($form_id == 'search_block_form' || $form_id == 'search_form') {
+    $form['#submit'][] = 'culture_frontend_search_box_form_submit';
+  }
+}
+
+/**
+ * Redirect search form submit to events list page with keyword filtering.
+ */
+function culture_frontend_search_box_form_submit(&$form, &$form_state) {
+  $keys = $form_state['input']['search_block_form'];
+  $form_state['redirect'][0] = url(
+    'arrangementer',
+    array(
+      'query' => array('title' => check_plain($keys)),
+      'absolute' => TRUE,
+    )
+  );
 }
 
 /**
