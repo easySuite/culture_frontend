@@ -79,7 +79,6 @@ function _culture_frontend_place_pane() {
     panels_save_display($display);
   }
 
-
   // Place new pane in correct position.
   $panes = db_select('panels_pane', 'pp')
     ->fields('pp', array('pid', 'panel', 'type', 'position'))
