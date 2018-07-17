@@ -29,6 +29,7 @@ function culture_frontend_field_schema() {
 function culture_frontend_install() {
   // Make '/user/login' path to redirect to page instead of showing ding_popup.
   variable_set('ding_user_show_login_page', 1);
+  _culture_frontend_place_pane();
 }
 
 /**
@@ -36,4 +37,73 @@ function culture_frontend_install() {
  */
 function culture_frontend_uninstall() {
   variable_del('ding_user_show_login_page');
+}
+
+/**
+ * Place 'Quick buttons' pane.
+ */
+function culture_frontend_update_7001() {
+  _culture_frontend_place_pane();
+}
+
+/**
+ * Place and position 'Quick buttons' pane on ding_event list page.
+ */
+function _culture_frontend_place_pane() {
+  ctools_include('plugins');
+  ctools_get_plugins('page_manager', 'task_handlers', 'panel_context');
+
+  $task = page_manager_get_task('page');
+  $handlers = page_manager_load_task_handlers($task);
+  $handler = $handlers['page_ding_events_panel_context'];
+
+  // Load ding_event page display.
+  $display = panels_panel_context_get_display($handler);
+
+  // Load custom ctools plugin.
+  $quick_buttons_pane = panels_new_pane('quick_buttons', 'quick_buttons', TRUE);
+
+  // Mark if we shall add custom pane or no.
+  $present = FALSE;
+  foreach ($display->content as $did => $pane) {
+    if ($pane->type == 'quick_buttons') {
+      $present = TRUE;
+    }
+  }
+
+  if (!$present) {
+    // Add custom pane.
+    $display->add_pane($quick_buttons_pane, 'main_content');
+
+    // Save changed display.
+    panels_save_display($display);
+  }
+
+
+  // Place new pane in correct position.
+  $panes = db_select('panels_pane', 'pp')
+    ->fields('pp', array('pid', 'panel', 'type', 'position'))
+    ->condition('panel', 'main_content', '=')
+    ->execute()
+    ->fetchAll();
+
+  foreach ($panes as $pane) {
+    $i = 0;
+    if ($pane->type == 'quick_buttons') {
+      db_update('panels_pane')
+        ->fields(array(
+          'position' => 0,
+        ))
+        ->condition('pid', $pane->pid)
+        ->execute();
+    }
+    else {
+      db_update('panels_pane')
+        ->fields(array(
+          'position' => ++$i,
+        ))
+        ->condition('pid', $pane->pid)
+        ->execute();
+    }
+  }
 }
