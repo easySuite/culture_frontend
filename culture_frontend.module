@@ -30,6 +30,16 @@ function culture_frontend_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $item['admin/config/culture'] = array(
+    'title' => 'Culture settings',
+    'description' => 'Culture frontend module configuration.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('culture_frontend_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'culture_frontend.admin.inc',
+  );
+
   return $item;
 }
 
@@ -333,6 +343,44 @@ function culture_frontend_views_query_alter(&$view, &$query) {
       $query->where[1]['conditions'][] = $date_condition;
     }
   }
+
+  // Add 'Domain Access' filter criteria.
+  $domain = domain_get_domain();
+
+  if (!empty(variable_get('culture_frontend_enable_views_domain_' . $domain['domain_id'], FALSE))) {
+    $enabled_views = views_get_enabled_views();
+
+    $content_modules = [
+      'ding_eresource',
+      'ding_event',
+      'ding_news',
+      'ding_library',
+      'ding_groups',
+    ];
+
+    $processed_views = [];
+    foreach ($enabled_views as $module) {
+      if (in_array($module->name, $content_modules)) {
+        $display_names = array_keys($module->display);
+        $processed_views[] = $display_names;
+      }
+    }
+
+    $inlined = call_user_func_array('array_merge', $processed_views);
+
+    foreach ($inlined as $item) {
+      if ($view->current_display == $item) {
+        $query->add_table('domain_access');
+
+        $query->add_where_expression(
+          'filter',
+          "node.nid=domain_access.nid AND ((domain_access.realm = 'domain_id' AND domain_access.gid=***CURRENT_DOMAIN***) OR (domain_access.realm = 'domain_site' AND domain_access.gid = :domain_id))",
+          ['domain_id' => $domain['domain_id']],
+          'formula'
+        );
+      }
+    }
+  }
 }
 
 /**
@@ -371,5 +419,23 @@ function culture_frontend_node_view_alter(&$build) {
 function culture_frontend_preprocess_views_exposed_form(&$variables) {
   if ($variables['form']['#id'] == 'views-exposed-form-ding-event-ding-event-list' && empty($variables['form']['field_ding_event_target_tid']['#options'])) {
     unset($variables['widgets']['filter-field_ding_event_target_tid']);
+  }
+}
+
+/**
+ * Implements hook_ding_nodelist_get_dynamic_list_query_alter().
+ */
+function culture_frontend_ding_nodelist_get_dynamic_list_query_alter(SelectQuery &$query) {
+  $domain = domain_get_domain();
+  if (!empty(variable_get('culture_frontend_enable_nodelist_domain_' . $domain['domain_id'], FALSE))) {
+    $query->addJoin(
+      'INNER',
+      'domain_access',
+      'da',
+      "n.nid=da.nid AND ((da.realm = 'domain_id' AND da.gid=:domain_id) OR (da.realm = 'domain_site' AND da.gid = :domain_id))",
+      [
+        ':domain_id' => $domain['domain_id'],
+      ]
+    );
   }
 }
