@@ -15,6 +15,25 @@
       var sticky_form = $('select[name="sticky"]', context);
       $('#edit-sticky-wrapper').hide();
 
+      var observer = new MutationObserver(function (mutationList) {
+        for (var mutation of mutationList) {
+          if (mutation.attributeName === 'style' && $(mutation.target).find('li.selected').length > 0) {
+            var content = $(mutation.target).find('li.selected div').text();
+            var matches = content.match(/(.*?)( \[)(.*?)(\])/);
+
+            $('.form-autocomplete').val(matches[1]);
+            start_date_form.val(matches[3]);
+            end_date_form.val(matches[3]);
+            // $('#views-exposed-form-ding-event-ding-event-list').submit();
+          }
+        }
+      });
+
+      var $textfield = $("#autocomplete", context);
+      if ($textfield[0]) {
+        observer.observe($textfield[0], {attributes: true});
+      }
+
       tomorrow.click(function (e) {
         sticky_form.find('option[value="All"]').prop('selected', true);
         var start_date_value = settings.culture_frontend.tommorow.date_start;

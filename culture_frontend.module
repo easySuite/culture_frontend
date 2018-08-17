@@ -89,6 +89,7 @@ function culture_frontend_events_autocomplete($type, $string = '') {
     $query = db_select('node', 'n');
     $query->join('field_data_field_ding_event_date', 'date', 'n.nid = date.entity_id');
     $query->fields('n', array('nid', 'title'))
+      ->fields('date', array('field_ding_event_date_value'))
       ->condition('type', 'ding_event')
       ->condition('title', '%' . db_like($string) . '%', 'LIKE')
       ->condition('status', '1')
@@ -98,6 +99,9 @@ function culture_frontend_events_autocomplete($type, $string = '') {
     foreach ($result as $node) {
       if ($type == 'list') {
         $matches[$node->title] = check_plain($node->title);
+      } elseif ($type == 'date') {
+        $date = date('d-m-Y', strtotime($node->field_ding_event_date_value));
+        $matches[$node->title . ' [' . $date . ']'] = check_plain($node->title . ' [' . $date . ']');
       }
       else {
         $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');
