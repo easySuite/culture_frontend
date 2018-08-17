@@ -24,7 +24,10 @@
             $('.form-autocomplete').val(matches[1]);
             start_date_form.val(matches[3]);
             end_date_form.val(matches[3]);
-            // $('#views-exposed-form-ding-event-ding-event-list').submit();
+
+            // TODO: Find a way to submit withou reloading the page
+            // Submit the whole form with the populated values.
+            $('#views-exposed-form-ding-event-ding-event-list').submit();
           }
         }
       });
