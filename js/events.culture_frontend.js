@@ -3,6 +3,7 @@
 
   Drupal.behaviors.culture_frontend_events_filter = {
     attach: function (context, settings) {
+      var $body = $('body');
       var form = $('#views-exposed-form-ding-event-ding-event-list', context);
 
       var tomorrow = $('#events-tomorrow', context);
@@ -25,7 +26,7 @@
             start_date_form.val(matches[3]);
             end_date_form.val(matches[3]);
 
-            // TODO: Find a way to submit withou reloading the page
+            // TODO: Find a way to submit without reloading the page
             // Submit the whole form with the populated values.
             $('#views-exposed-form-ding-event-ding-event-list').submit();
           }
@@ -64,6 +65,16 @@
         end_date_form.val('');
         form.find('.ctools-auto-submit-click').click();
       });
+
+      form.find('.ctools-auto-submit-click').on('click', function (event) {
+        $body.addClass('overlay-is-active');
+        Drupal.TingSearchOverlay();
+      });
+
+      if ($body.hasClass('overlay-is-active')) {
+        Drupal.TingSearchOverlay(true);
+        $body.removeClass('overlay-is-active');
+      }
     }
   };
 
