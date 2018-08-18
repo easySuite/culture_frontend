@@ -48,6 +48,9 @@ function culture_frontend_menu() {
  */
 function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'search_block_form' || $form_id == 'search_form') {
+    $form['search_block_form']['#attributes']['class'] = array('auto-submit');
+    $form['search_block_form']['#autocomplete_path'] = 'culture_events/date/autocomplete';
+
     $form['#submit'][] = 'culture_frontend_search_box_form_submit';
   }
 }
@@ -57,10 +60,20 @@ function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
  */
 function culture_frontend_search_box_form_submit(&$form, &$form_state) {
   $keys = $form_state['input']['search_block_form'];
+
+  $matches = [];
+  preg_match('/(.*?)( \[)(.*?)(\])/', $keys, $matches);
+  $query = [];
+
+  if (!empty($matches)) {
+    $query['title'] = check_plain($matches[1]);
+    $query['date[value][date]'] = check_plain($matches[3]);
+    $query['field_ding_event_date_value_1[value][date]'] = $matches[3];
+  }
   $form_state['redirect'][0] = url(
     'arrangementer',
     array(
-      'query' => array('title' => check_plain($keys)),
+      'query' => $query,
       'absolute' => TRUE,
     )
   );
@@ -89,6 +102,7 @@ function culture_frontend_events_autocomplete($type, $string = '') {
     $query = db_select('node', 'n');
     $query->join('field_data_field_ding_event_date', 'date', 'n.nid = date.entity_id');
     $query->fields('n', array('nid', 'title'))
+      ->fields('date', array('field_ding_event_date_value'))
       ->condition('type', 'ding_event')
       ->condition('title', '%' . db_like($string) . '%', 'LIKE')
       ->condition('status', '1')
@@ -98,6 +112,9 @@ function culture_frontend_events_autocomplete($type, $string = '') {
     foreach ($result as $node) {
       if ($type == 'list') {
         $matches[$node->title] = check_plain($node->title);
+      } elseif ($type == 'date') {
+        $date = date('d-m-Y', strtotime($node->field_ding_event_date_value));
+        $matches[$node->title . ' [' . $date . ']'] = check_plain($node->title . ' [' . $date . ']');
       }
       else {
         $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');
