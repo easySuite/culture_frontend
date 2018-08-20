@@ -114,7 +114,7 @@ function culture_frontend_events_autocomplete($type, $string = '') {
         $matches[$node->title] = check_plain($node->title);
       } elseif ($type == 'date') {
         $date = date('d-m-Y', strtotime($node->field_ding_event_date_value));
-        $matches[$node->title . ' [' . $date . ']'] = check_plain($node->title . ' [' . $date . ']');
+        $matches[$node->title . ' [' . $date . ']'] = check_plain($node->title . ' [' . $date . '] [' . $node->nid . ']');
       }
       else {
         $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');

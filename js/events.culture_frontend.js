@@ -20,15 +20,9 @@
         for (var mutation of mutationList) {
           if (mutation.attributeName === 'style' && $(mutation.target).find('li.selected').length > 0) {
             var content = $(mutation.target).find('li.selected div').text();
-            var matches = content.match(/(.*?)( \[)(.*?)(\])/);
 
-            $('.form-autocomplete').val(matches[1]);
-            start_date_form.val(matches[3]);
-            end_date_form.val(matches[3]);
-
-            // TODO: Find a way to submit without reloading the page
-            // Submit the whole form with the populated values.
-            $('#views-exposed-form-ding-event-ding-event-list').submit();
+            var matches = content.match(/(.*?)( \[)(.*?)(\] \[)(.*?)(\])/);
+            window.location.href = "/node/" + matches[5];
           }
         }
       });
