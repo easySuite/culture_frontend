@@ -62,7 +62,7 @@ function culture_frontend_search_box_form_submit(&$form, &$form_state) {
   $keys = $form_state['input']['search_block_form'];
 
   $matches = [];
-  preg_match('/(.*?)( \[)(.*?)(\])/', $keys, $matches);
+  preg_match('/(.*?)( \[)(.*?)(\] \[)(.*?)(\])/', $keys, $matches);
   $query = [];
 
   if (!empty($matches)) {
@@ -70,13 +70,18 @@ function culture_frontend_search_box_form_submit(&$form, &$form_state) {
     $query['date[value][date]'] = check_plain($matches[3]);
     $query['field_ding_event_date_value_1[value][date]'] = $matches[3];
   }
-  $form_state['redirect'][0] = url(
-    'arrangementer',
-    array(
-      'query' => $query,
-      'absolute' => TRUE,
-    )
-  );
+  if (!empty($matches[5])) {
+    $form_state['redirect'][0] = url('node/' . $matches[5]);
+  }
+  else {
+    $form_state['redirect'][0] = url(
+      'arrangementer',
+      array(
+        'query' => $query,
+        'absolute' => TRUE,
+      )
+    );
+  }
 }
 
 /**
@@ -114,7 +119,7 @@ function culture_frontend_events_autocomplete($type, $string = '') {
         $matches[$node->title] = check_plain($node->title);
       } elseif ($type == 'date') {
         $date = date('d-m-Y', strtotime($node->field_ding_event_date_value));
-        $matches[$node->title . ' [' . $date . ']'] = check_plain($node->title . ' [' . $date . '] [' . $node->nid . ']');
+        $matches[$node->title . ' [' . $date . '] [' . $node->nid . ']'] = check_plain($node->title . ' [' . $date . '] [' . $node->nid . ']');
       }
       else {
         $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');
