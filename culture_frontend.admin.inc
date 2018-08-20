@@ -23,6 +23,12 @@ function culture_frontend_admin_settings($form, &$form_state) {
     '#collapsed' => FALSE,
   );
 
+  $form['culture_frontend_settings']['culture_frontend_external_library'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Path to the external library'),
+    '#default_value' => variable_get('culture_frontend_external_library', ''),
+  );
+
   $domains = domain_domains();
 
   foreach ($domains as $domain) {
