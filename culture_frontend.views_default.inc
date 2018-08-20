@@ -87,8 +87,10 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['field'] = 'nid';
   $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['nid']['validate']['fail'] = 'access denied';
+  $handler->display->display_options['arguments']['nid']['rendered_view_mode'] = 'teaser';
   $handler->display->display_options['arguments']['nid']['title_relevance'] = '0.8';
-  $handler->display->display_options['arguments']['nid']['body_relevance'] = '1.4';
+  $handler->display->display_options['arguments']['nid']['body_relevance'] = '0';
+  $handler->display->display_options['arguments']['nid']['include_fields'] = 1;
   $handler->display->display_options['arguments']['nid']['included_fields:og_membership_request'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_alt_text'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_title_text'] = '0';
@@ -111,8 +113,9 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['included_fields:field_ting_object'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_value'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:comment_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '2.0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_lead'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_price'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_body'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_fax_number'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_lead'] = '0';
@@ -149,6 +152,34 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_question'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_subject'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_targeting'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_eb_section_summary_text'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_custom_css'] = '0';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'ding_event' => 'ding_event',
+  );
+  /* Filter criterion: Date: Date (node) */
+  $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['table'] = 'node';
+  $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['operator'] = '>=';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = 'now';
+  $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+    'field_data_field_ding_event_date.field_ding_event_date_value' => 'field_data_field_ding_event_date.field_ding_event_date_value',
+    'field_data_field_ding_event_date.field_ding_event_date_value2' => 'field_data_field_ding_event_date.field_ding_event_date_value2',
+  );
 
   /* Display: Category */
   $handler = $view->new_display('panel_pane', 'Category', 'culture_events_category');
