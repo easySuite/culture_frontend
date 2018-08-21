@@ -51,6 +51,12 @@ function culture_frontend_form_alter(&$form, &$form_state, $form_id) {
     $form['search_block_form']['#attributes']['class'] = array('auto-submit');
     $form['search_block_form']['#autocomplete_path'] = 'culture_events/date/autocomplete';
 
+    $form['redirected_nid'] = array(
+      '#type' => 'hidden',
+      '#id' => 'redirected_nid',
+      '#value' => '0',
+    );
+
     $form['#submit'][] = 'culture_frontend_search_box_form_submit';
   }
 }
@@ -70,8 +76,9 @@ function culture_frontend_search_box_form_submit(&$form, &$form_state) {
     $query['date[value][date]'] = check_plain($matches[3]);
     $query['field_ding_event_date_value_1[value][date]'] = $matches[3];
   }
-  if (!empty($matches[5])) {
-    $form_state['redirect'][0] = url('node/' . $matches[5]);
+
+  if (!empty($form_state['input']['redirected_nid'])) {
+    $form_state['redirect'][0] = url('node/' . $form_state['input']['redirected_nid']);
   }
   else {
     $form_state['redirect'][0] = url(
@@ -117,9 +124,10 @@ function culture_frontend_events_autocomplete($type, $string = '') {
     foreach ($result as $node) {
       if ($type == 'list') {
         $matches[$node->title] = check_plain($node->title);
-      } elseif ($type == 'date') {
+      }
+      elseif ($type == 'date') {
         $date = date('d-m-Y', strtotime($node->field_ding_event_date_value));
-        $matches[$node->title . ' [' . $date . '] [' . $node->nid . ']'] = check_plain($node->title . ' [' . $date . '] [' . $node->nid . ']');
+        $matches[$node->title . ' [' . $date . '] [' . $node->nid . ']'] = check_plain($node->title . ' [' . $date . ']');
       }
       else {
         $matches[$node->title . ' [' . $node->nid . ']'] = check_plain($node->title . ' [' . $node->nid . ']');

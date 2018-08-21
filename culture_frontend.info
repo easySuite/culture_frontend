@@ -54,4 +54,5 @@ features[variable][] = domain_theme_weight
 features[variable][] = site_frontpage
 features[variable][] = theme_default
 features[views_view][] = culture_events
+scripts[] = js/global.culture_frontend.js
 required = 1
