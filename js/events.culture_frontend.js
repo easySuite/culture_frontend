@@ -22,11 +22,8 @@
             var content = $('#views-exposed-form-ding-event-ding-event-list input#edit-title').val();
             var matches = content.match(/(.*?)( \[)(.*?)(\] \[)(.*?)(\])/);
             var nid = matches[5];
-
             var search_key = content.substring(0, -5);
-            console.log(search_key)
             $('#views-exposed-form-ding-event-ding-event-list input#edit-title').val(search_key);
-
             window.location.href = "/node/" + nid;
           }
         }
