@@ -19,10 +19,12 @@
       var observer = new MutationObserver(function (mutationList) {
         for (var mutation of mutationList) {
           if (mutation.attributeName === 'style' && $(mutation.target).find('li.selected').length > 0) {
-            var content = $(mutation.target).find('li.selected div').text();
-
+            var content = $('#views-exposed-form-ding-event-ding-event-list input#edit-title').val();
             var matches = content.match(/(.*?)( \[)(.*?)(\] \[)(.*?)(\])/);
-            window.location.href = "/node/" + matches[5];
+            var nid = matches[5];
+            var search_key = content.substring(0, -5);
+            $('#views-exposed-form-ding-event-ding-event-list input#edit-title').val(search_key);
+            window.location.href = "/node/" + nid;
           }
         }
       });
