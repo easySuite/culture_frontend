@@ -4,6 +4,7 @@
   Drupal.behaviors.event_node_culture_frontend = {
     attach: function () {
       let lists = [
+          'controlled-category_library-list',
           'controlled-similar-list',
           'controlled-category-list',
           'controlled-day-list',
