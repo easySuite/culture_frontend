@@ -60,6 +60,14 @@ function culture_frontend_field_formatter_view($entity_type, $entity, $field, $i
 
         foreach ($options as $key => $option) {
           switch ($key) {
+            case 'library':
+              if ($option['check'] == 1) {
+                $library = $entity->og_group_ref['und'][0]['target_id'];
+                $output = _culture_frontend_views_result($key, array($library), $option['amount']);
+                $element[0][] = $output;
+              }
+              break;
+
             case 'similar':
               if ($option['check'] == 1) {
                 $output = _culture_frontend_views_result($key, array($entity->nid), $option['amount']);
@@ -80,14 +88,6 @@ function culture_frontend_field_formatter_view($entity_type, $entity, $field, $i
                 $date = $entity->field_ding_event_date['und'][0]['value'];
                 $date = format_date(strtotime($date), 'custom', 'Y-m-d');
                 $output = _culture_frontend_views_result($key, array($date), $option['amount']);
-                $element[0][] = $output;
-              }
-              break;
-
-            case 'library':
-              if ($option['check'] == 1) {
-                $library = $entity->og_group_ref['und'][0]['target_id'];
-                $output = _culture_frontend_views_result($key, array($library), $option['amount']);
                 $element[0][] = $output;
               }
               break;
@@ -184,10 +184,10 @@ function culture_frontend_field_widget_form(&$form, &$form_state, $field, $insta
       );
 
       $options = array(
+        'library' => t('Same category event on Kulturøen'),
         'similar' => t('Similar events'),
         'category' => t('Other events in same category'),
         'day' => t('Other events the same day'),
-        'library' => t('Other events in the same library CT'),
         'manually' => t('Manually chosen nodes'),
       );
 

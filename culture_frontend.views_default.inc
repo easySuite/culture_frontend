@@ -250,7 +250,7 @@ function culture_frontend_views_default_views() {
   /* Display: Library */
   $handler = $view->new_display('panel_pane', 'Library', 'culture_events_library');
   $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Other events in the same library';
+  $handler->display->display_options['title'] = 'Same category event on Kulturøen';
   $handler->display->display_options['defaults']['relationships'] = FALSE;
   /* Relationship: OG membership: OG membership from Node */
   $handler->display->display_options['relationships']['og_membership_rel']['id'] = 'og_membership_rel';
@@ -290,7 +290,7 @@ function culture_frontend_views_default_views() {
     t('Day'),
     t('Other events the same day'),
     t('Library'),
-    t('Other events in the same library'),
+    t('Same category event on Kulturøen'),
     t('OG membership from node'),
     t('Group node from OG membership'),
   );
