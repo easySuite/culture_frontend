@@ -469,3 +469,28 @@ function culture_frontend_ding_nodelist_get_dynamic_list_query_alter(SelectQuery
     );
   }
 }
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function culture_frontend_views_pre_render(&$view) {
+  if ($view->name == 'culture_events' && $view->current_display == 'culture_events_category_library') {
+    if (!empty($view->result)) {
+      $results = $view->result;
+
+      $page_query_args = arg();
+      $current_page_nid = $page_query_args[1];
+
+      foreach ($results as $key => $result) {
+        if ($result->nid == $current_page_nid) {
+          unset($results[$key]);
+        }
+      }
+      $view->result = $results;
+
+      if (empty($results)) {
+        $view->render();
+      }
+    }
+  }
+}
