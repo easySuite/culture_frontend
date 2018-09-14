@@ -29,6 +29,9 @@ function culture_frontend_field_schema() {
 function culture_frontend_install() {
   // Make '/user/login' path to redirect to page instead of showing ding_popup.
   variable_set('ding_user_show_login_page', 1);
+  if (!module_exists('ctools')) {
+    module_enable(['ctools', 'page_manager', 'panels', 'node', 'i18n_string']);
+  }
   _culture_frontend_place_pane();
 
   module_disable(array('ting_search_autocomplete'));
