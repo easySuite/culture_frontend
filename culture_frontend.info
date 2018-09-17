@@ -2,7 +2,6 @@ name = Culture frontend
 core = 7.x
 package = Culture
 dependencies[] = ctools
-dependencies[] = culture_frontend
 dependencies[] = ding_event_calendar
 dependencies[] = ding_nodelist
 dependencies[] = ding_social
