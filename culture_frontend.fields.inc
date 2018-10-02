@@ -200,6 +200,15 @@ function culture_frontend_field_widget_form(&$form, &$form_state, $field, $insta
         'manually' => t('Manually chosen nodes'),
       );
 
+      $default_options = array(
+        'category_library' => 1,
+        'similar' => 0,
+        'category' => 1,
+        'day' => 1,
+        'library' => 0,
+        'manually' => 0,
+      );
+
       foreach ($options as $key => $option) {
         $item = array();
         if (!empty($items[$delta]['lists_options'])) {
@@ -209,7 +218,7 @@ function culture_frontend_field_widget_form(&$form, &$form_state, $field, $insta
         $element['wrapper']['lists_options'][$key]['check'] = array(
           '#type' => 'checkbox',
           '#title' => $option,
-          '#default_value' => !empty($item['check']) ? 1 : 0,
+          '#default_value' => !empty($item['check']) ? 1 : $default_options[$key],
         );
 
         if ($key != 'manually') {
