@@ -30,15 +30,17 @@ function culture_frontend_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $item['admin/config/culture'] = array(
-    'title' => 'Culture settings',
-    'description' => 'Culture frontend module configuration.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('culture_frontend_admin_settings'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'culture_frontend.admin.inc',
-  );
+  if (module_exists('domain')) {
+    $item['admin/config/culture'] = [
+      'title' => 'Culture settings',
+      'description' => 'Culture frontend module configuration.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => ['culture_frontend_admin_settings'],
+      'access arguments' => ['administer site configuration'],
+      'type' => MENU_NORMAL_ITEM,
+      'file' => 'culture_frontend.admin.inc',
+    ];
+  }
 
   return $item;
 }
