@@ -25,8 +25,8 @@ function culture_frontend_menu() {
     'title' => 'Event nodes autocomplete',
     'page callback' => 'culture_frontend_events_autocomplete',
     'page arguments' => array(1),
-    'access callback' => 'user_access',
     'access arguments' => array('access content'),
+    'delivery callback' => 'drupal_json_output',
     'type' => MENU_CALLBACK,
   );
 
@@ -77,6 +77,9 @@ function culture_frontend_search_box_form_submit(&$form, &$form_state) {
     $query['title'] = check_plain($matches[1]);
     $query['date[value][date]'] = check_plain($matches[3]);
     $query['field_ding_event_date_value_1[value][date]'] = $matches[3];
+  }
+  elseif (!empty($keys)) {
+    $query['title'] = check_plain($keys);
   }
 
   if (!empty($form_state['input']['redirected_nid'])) {
@@ -137,7 +140,7 @@ function culture_frontend_events_autocomplete($type, $string = '') {
     }
   }
 
-  drupal_json_output($matches);
+  return $matches;
 }
 
 /**
