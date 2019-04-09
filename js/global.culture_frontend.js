@@ -13,15 +13,16 @@
 
         // Splitting into pieces in order to get node id.
         var matches = search_key.match(/(.*?)( \[)(.*?)(\] \[)(.*?)(\])/);
+        if (matches) {
+          // Defining node id variable,
+          var nid = matches[5];
 
-        // Defining node id variable,
-        var nid = matches[5];
+          // Set node id into hidden field for further processing.
+          $('[name="redirected_nid"]').val(nid);
 
-        // Set node id into hidden field for further processing.
-        $('[name="redirected_nid"]').val(nid);
-
-        // Cleaning up searched string and present this normally.
-        search_key = search_key.substring(0, search_key.length - 5);
+          // Cleaning up searched string and present this normally.
+          search_key = search_key.substring(0, search_key.length - 5);
+        }
 
         // Put cleaned search string back into search field.
         $($this).val(search_key);
