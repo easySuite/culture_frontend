@@ -378,27 +378,6 @@ function culture_frontend_views_query_alter(&$view, &$query) {
       $query->where[1]['conditions'][] = $date_condition;
     }
   }
-
-  if ($view->name == 'culture_events' && $view->current_display == 'culture_events_category_library') {
-    $nid = arg(1);
-    if (!empty($nid)) {
-      $node = node_load($nid);
-
-      $field_items = field_get_items('node', $node, 'og_group_ref');
-      $og_group_ref = $field_items[0]['target_id'];
-
-      $conditions = $query->where[1]['conditions'];
-
-      $og_field_condition = array_filter($conditions, function ($condition, $key) {
-        if ($condition['field'] == 'og_membership.gid') {
-          return $key;
-        }
-      }, ARRAY_FILTER_USE_BOTH);
-      $og_field_condition_key = array_keys($og_field_condition)[0];
-
-      $query->where[1]['conditions'][$og_field_condition_key]['value'] = $og_group_ref;
-    }
-  }
 }
 
 /**
