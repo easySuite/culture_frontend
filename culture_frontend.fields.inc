@@ -141,6 +141,7 @@ function culture_frontend_field_formatter_view($entity_type, $entity, $field, $i
  *   Renderable array.
  */
 function _culture_frontend_views_result($type, array $args, $amount, $headline = FALSE) {
+  $output = [];
   $view = views_get_view('culture_events');
   $view->set_display('culture_events_' . $type);
   if (!empty($headline)) {
@@ -149,16 +150,19 @@ function _culture_frontend_views_result($type, array $args, $amount, $headline =
   $view->set_arguments($args);
   $view->set_items_per_page($amount);
   $view->execute();
-  $rendered = $view->preview();
 
-  $output = array(
-    '#type' => 'html_tag',
-    '#tag' => 'div',
-    '#attributes' => array(
-      'class' => array('controlled-' . $type . '-list'),
-    ),
-    '#value' => $rendered,
-  );
+  if (!empty($view->result)) {
+    $rendered = $view->preview();
+
+    $output = [
+      '#type' => 'html_tag',
+      '#tag' => 'div',
+      '#attributes' => [
+        'class' => ['controlled-' . $type . '-list'],
+      ],
+      '#value' => $rendered,
+    ];
+  }
 
   return $output;
 }
