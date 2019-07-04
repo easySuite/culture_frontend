@@ -376,6 +376,7 @@ function culture_frontend_views_query_alter(&$view, &$query) {
 
       // Condition for fetching events with same date as parent node.
       $query->where[1]['conditions'][] = $date_condition;
+      $query->where[0]['conditions'][0]['value'][':node_nid'] = $nid;
     }
   }
 }
