@@ -462,3 +462,22 @@ function culture_frontend_views_pre_render(&$view) {
     }
   }
 }
+
+/**
+ * Implements hook_preprocess().
+ */
+function culture_frontend_preprocess(&$variables, $hook) {
+  if ($hook == 'node') {
+    if ($variables['view_mode'] == 'teaser' && $variables['type'] == 'ding_news') {
+      $news_lead = $variables['content']['field_ding_news_lead'][0]['#markup'];
+      $news_lead = truncate_utf8($news_lead, 100, TRUE, TRUE);
+      $variables['content']['field_ding_news_lead'][0]['#markup'] = $news_lead;
+    }
+
+    if ($variables['view_mode'] == 'teaser' && $variables['type'] == 'ding_event') {
+      $load_lead_field = field_get_items('node', $variables['node'], 'field_ding_event_lead');
+      $event_lead = truncate_utf8($load_lead_field[0]['value'], 100, TRUE, TRUE);
+      $variables['content']['field_ding_event_lead'][0]['#markup'] = $event_lead;
+    }
+  }
+}
