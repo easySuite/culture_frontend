@@ -151,7 +151,41 @@ function culture_frontend_theme($existing, $type, $theme, $path) {
     'manually_multifield_dragandrop' => array(
       'render element' => 'element',
     ),
+    'quick_buttons_wraplabel' => array(
+      'render element' => 'element',
+    ),
   );
+}
+
+/**
+ * Theme checkbox wrapped in label tags.
+ */
+function theme_quick_buttons_wraplabel($variables) {
+  $element = $variables['element'];
+  if (isset($element['#markup']) && !empty($element['#id'])) {
+    $attributes['id'] = $element['#id'];
+  }
+  $attributes['class'] = array('form-item');
+  if (!empty($element['#type'])) {
+    $attributes['class'][] = 'form-type-' . strtr($element['#type'], '_', '-');
+  }
+  if (!empty($element['#name'])) {
+    $attributes['class'][] = 'form-item-' . strtr($element['#name'], array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
+  }
+  if (!empty($element['#attributes']['disabled'])) {
+    $attributes['class'][] = 'form-disabled';
+  }
+  $output = '<div' . drupal_attributes($attributes) . '>' . "\n";
+  switch ($element['#title_display']) {
+    case 'wraplabel':
+      $output .= '<label for="'. $element['#attributes']['id'] .'">';
+      $output .= ' ' . $prefix . $element['#children'];
+      $output .= '<span class="element-label">' . $element['#title'] . '</span>';
+      $output .= '</label>' . $suffix . "\n";
+      break;
+  }
+  $output .= "</div>\n";
+  return $output;
 }
 
 /**

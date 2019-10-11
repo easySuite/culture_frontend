@@ -34,11 +34,17 @@
         observer.observe($textfield[0], {attributes: true});
       }
 
+      $(".quick-checkbox").change(function() {
+        $(".quick-checkbox").not(this).prop('checked', false);
+      });
+
       tomorrow.click(function (e) {
         sticky_form.find('option[value="All"]').prop('selected', true);
-        var start_date_value = settings.culture_frontend.tommorow.date_start;
-        var end_date_value  = settings.culture_frontend.tommorow.date_end;
-        e.preventDefault();
+        var start_date_value = settings.culture_frontend.tomorrow.date_start;
+        var end_date_value  = settings.culture_frontend.tomorrow.date_end;
+        if (e.target.type !== 'checkbox') {
+          e.preventDefault();
+        }
         start_date_form.val(start_date_value);
         end_date_form.val(end_date_value);
         form.find('.ctools-auto-submit-click').click();
@@ -48,14 +54,18 @@
         sticky_form.find('option[value="All"]').prop('selected', true);
         var start_date_value = settings.culture_frontend.next_weekend.date_start;
         var end_date_value  = settings.culture_frontend.next_weekend.date_end;
-        e.preventDefault();
+        if (e.target.type !== 'checkbox') {
+          e.preventDefault();
+        }
         start_date_form.val(start_date_value);
         end_date_form.val(end_date_value);
         form.find('.ctools-auto-submit-click').click();
       });
 
       top_events.click(function (e) {
-        e.preventDefault();
+        if (e.target.type !== 'checkbox') {
+          e.preventDefault();
+        }
         sticky_form.find('option[value="1"]').prop('selected', true);
         start_date_form.val(settings.culture_frontend.top_events.today);
         end_date_form.val('');
