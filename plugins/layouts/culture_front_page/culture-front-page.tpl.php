@@ -12,16 +12,16 @@
 ?>
 
 <div <?php if (!empty($css_id)) {print ' id="$css_id"';} ?> class="container">
-  <div class="row">
+  <div class="row front-slider-container">
     <?php if ($content['s1_r_01_100']): ?>
-      <div class="col col-md-12"><?php print $content['s1_r_01_100']; ?></div>
+      <div class="col col-md-12 front-slider-wrapper"><?php print $content['s1_r_01_100']; ?></div>
     <?php endif; ?>
   </div>
 
-  <div class="row">
+  <div class="row content-container">
     <?php if ($content['s2_r_01_033'] || $content['s2_r_01_066']): ?>
-      <div class="col col-md-8"><?php print $content['s2_r_01_066']; ?></div>
-      <div class="col col-md-4"><?php print $content['s2_r_01_033']; ?></div>
+      <div class="col col-lg-8 col-md-12 col-sm-12 primary-content-wrapper"><?php print $content['s2_r_01_066']; ?></div>
+      <div class="col col-lg-4 col-md-12 col-sm-12 secondary-content-wrapper"><?php print $content['s2_r_01_033']; ?></div>
     <?php endif; ?>
   </div>
 </div>
