@@ -381,6 +381,35 @@ function culture_frontend_form_ding_event_node_form_alter(&$form, &$form_state, 
 }
 
 /**
+ * Implements hook_views_pre_execute().
+ * 
+ * @see ding_event_views_pre_execute()
+ */
+function culture_frontend_views_pre_execute(&$view) {
+  if ($view->name == 'ding_event' && $view->current_display == 'ding_event_list') {
+    // Make views search for events with a ranged period.
+    /** @var \DatabaseCondition $query */
+    $query = $view->build_info['query'];
+
+    $append = " OR (";
+    $append .= "DATE_FORMAT(ADDTIME(field_data_field_ding_event_date.field_ding_event_date_value, SEC_TO_TIME(7200)), '%Y-%m-%d') <= :field_data_field_ding_event_date_field_ding_event_date_value";
+    $append .= " AND DATE_FORMAT(ADDTIME(field_data_field_ding_event_date.field_ding_event_date_value2, SEC_TO_TIME(7200)), '%Y-%m-%d') >= :field_data_field_ding_event_date_field_ding_event_date_value";
+    $append .= " OR (fdelf.field_ding_event_list_filter_value = :filter";
+    $append .= " AND DATE_FORMAT(ADDTIME(field_data_field_ding_event_date.field_ding_event_date_value, SEC_TO_TIME(7200)), '%Y-%m-%d') >= :field_data_field_ding_event_date_field_ding_event_date_value)";
+    $append .= ")";
+
+    if (!empty($view->exposed_data['title'])) {
+      // This condition is moved, so catch this and append the query to the
+      // field on new position.
+      $query->conditions()[0]['field']->conditions()[0]['field']->conditions()[4]['field'] .= $append;
+    }
+    else {
+      $query->conditions()[0]['field']->conditions()[0]['field']->conditions()[3]['field'] .= $append;
+    }
+  }
+}
+
+/**
  * Implements hook_views_query_alter().
  */
 function culture_frontend_views_query_alter(&$view, &$query) {
