@@ -382,6 +382,8 @@ function culture_frontend_form_ding_event_node_form_alter(&$form, &$form_state, 
 
 /**
  * Implements hook_views_pre_execute().
+ * 
+ * @see ding_event_views_pre_execute()
  */
 function culture_frontend_views_pre_execute(&$view) {
   if ($view->name == 'ding_event' && $view->current_display == 'ding_event_list') {
@@ -397,11 +399,8 @@ function culture_frontend_views_pre_execute(&$view) {
     $append .= ")";
 
     if (!empty($view->exposed_data['title'])) {
-      /**
-       * This condition is moved, so catch this and append the query to the
-       * field on new position.
-       */
-       /* @see ding_event_views_pre_execute().*/
+      // This condition is moved, so catch this and append the query to the
+      // field on new position.
       $query->conditions()[0]['field']->conditions()[0]['field']->conditions()[4]['field'] .= $append;
     }
     else {
