@@ -487,6 +487,10 @@ function culture_frontend_preprocess_views_exposed_form(&$variables) {
  * Implements hook_ding_nodelist_get_dynamic_list_query_alter().
  */
 function culture_frontend_ding_nodelist_get_dynamic_list_query_alter(SelectQuery &$query) {
+  if (!module_exists('domain')) {
+    return;
+  }
+
   $domain = domain_get_domain();
   if (!empty(variable_get('culture_frontend_enable_nodelist_domain_' . $domain['domain_id'], FALSE))) {
     $query->addJoin(
