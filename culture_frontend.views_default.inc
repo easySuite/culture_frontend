@@ -51,7 +51,7 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['nid']['break_phrase'] = TRUE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -81,11 +81,11 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Other events in the same library';
   $handler->display->display_options['defaults']['relationships'] = FALSE;
-  /* Relationship: OG membership: OG membership from Node */
+  /* Relationship: OG membership: OG membership from Content */
   $handler->display->display_options['relationships']['og_membership_rel']['id'] = 'og_membership_rel';
   $handler->display->display_options['relationships']['og_membership_rel']['table'] = 'node';
   $handler->display->display_options['relationships']['og_membership_rel']['field'] = 'og_membership_rel';
-  /* Relationship: OG membership: Group Node from OG membership */
+  /* Relationship: OG membership: Group Content from OG membership */
   $handler->display->display_options['relationships']['og_membership_related_node_group']['id'] = 'og_membership_related_node_group';
   $handler->display->display_options['relationships']['og_membership_related_node_group']['table'] = 'og_membership';
   $handler->display->display_options['relationships']['og_membership_related_node_group']['field'] = 'og_membership_related_node_group';
@@ -117,53 +117,33 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['title_relevance'] = '0.8';
   $handler->display->display_options['arguments']['nid']['body_relevance'] = '0';
   $handler->display->display_options['arguments']['nid']['include_fields'] = 1;
-  $handler->display->display_options['arguments']['nid']['included_fields:og_membership_request'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_alt_text'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_title_text'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:message_text'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_page_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_page_lead'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_first_element'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_last_element'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_new_count'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_state'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_list'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_list_user'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_element_type'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_list_type'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_note'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_notes'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_search_query'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_search_title'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_taxonomy_term'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ting_object'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_value'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:comment_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '2.0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_lead'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_price'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_body'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_fax_number'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_lead'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_phone_number'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_library_slug'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_eresource_body'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_eresource_lead'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_body'] = '2.0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_lead'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_event_price'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_group_body'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_group_lead'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_news_body'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_news_lead'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_page_lead'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_tabroll_lead'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:og_membership_request'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_alt_text'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_file_image_title_text'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_taxonomy_ting_objects'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_staff_description'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_staff_forename'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_staff_phone'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_staff_position'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_staff_surname'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_ding_staff_work_areas'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_interaction_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_taxonomy_ting_objects'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_camp_link'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_camp_text_full'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_eresource_body'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_ding_eresource_lead'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_eb_section_summary_text'] = '0';
+  $handler->display->display_options['arguments']['nid']['included_fields:field_custom_css'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_actions'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_caption'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_description'] = '0';
@@ -178,11 +158,9 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_question'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_subject'] = '0';
   $handler->display->display_options['arguments']['nid']['included_fields:field_facebook_targeting'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_eb_section_summary_text'] = '0';
-  $handler->display->display_options['arguments']['nid']['included_fields:field_custom_css'] = '0';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -248,7 +226,7 @@ function culture_frontend_views_default_views() {
   $handler->display->display_options['arguments']['nid']['not'] = TRUE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -298,7 +276,7 @@ function culture_frontend_views_default_views() {
   );
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';

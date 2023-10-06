@@ -22,6 +22,12 @@ function culture_frontend_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'culture' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'default' => array(
         'label' => 'hidden',
         'module' => 'culture_frontend',
@@ -42,6 +48,12 @@ function culture_frontend_field_default_field_instances() {
         'weight' => 0,
       ),
       'teaser_highlight' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser_no_overlay' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',

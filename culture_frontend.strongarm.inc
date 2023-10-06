@@ -14,10 +14,7 @@ function culture_frontend_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'domain_bootstrap_modules';
-  $strongarm->value = array(
-    0 => 'domain_variable',
-    1 => 'domain_conf',
-  );
+  $strongarm->value = array();
   $export['domain_bootstrap_modules'] = $strongarm;
 
   $strongarm = new stdClass();
