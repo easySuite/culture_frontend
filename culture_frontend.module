@@ -382,7 +382,7 @@ function culture_frontend_form_ding_event_node_form_alter(&$form, &$form_state, 
 
 /**
  * Implements hook_views_pre_execute().
- * 
+ *
  * @see ding_event_views_pre_execute()
  */
 function culture_frontend_views_pre_execute(&$view) {
@@ -547,4 +547,14 @@ function culture_frontend_preprocess(&$variables, $hook) {
       $variables['content']['field_ding_event_lead'][0]['#markup'] = $event_lead;
     }
   }
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function culture_frontend_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['culture'] = array(
+    'label' => t('Culture'),
+    'custom settings' => TRUE,
+  );
 }
